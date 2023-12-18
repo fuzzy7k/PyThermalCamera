@@ -30,6 +30,8 @@ import numpy as np
 import argparse
 import time
 import io
+import os
+import subprocess
 
 #We need to know if we are running on the Pi, because openCV behaves a little oddly on all the builds!
 #https://raspberrypi.stackexchange.com/questions/5100/detect-that-a-python-program-is-running-on-the-pi
@@ -41,6 +43,72 @@ def is_raspberrypi():
     return False
 
 isPi = is_raspberrypi()
+
+class ui:
+    session = ""
+    rotLock = ""
+
+    def detect():
+        global isPi
+
+        try:
+            ui.session = os.environ['XDG_SESSION_DESKTOP']
+        except:
+            session = "unknown"
+
+        print(ui.session)
+
+        if ui.session == "phosh":
+            isPi = True
+            ui.mobile()
+
+    def mobile():
+        #record lock setting
+        ui.getlock()
+
+        if ui.rotLock == "false":
+            ui.resLock = True
+            ui.setlock("true")
+
+        #record orient
+        ui.getorient()
+
+        #reorient
+        ui.setorient()
+
+    #class gnome:
+    def getlock():
+        p = subprocess.run(["gsettings", "get",
+        "org.gnome.settings-daemon.peripherals.touchscreen",
+        "orientation-lock"],
+        stdout=subprocess.PIPE, check=True, text=True)
+
+        ui.rotLock = p.stdout.strip()
+
+    def setlock(val=rotLock):
+        p = subprocess.run(["gsettings", "set",
+        "org.gnome.settings-daemon.peripherals.touchscreen",
+        "orientation-lock", val],
+        stdout=subprocess.PIPE, check=True, text=True)
+
+        print(p.stdout, p.stderr)
+
+    def getorient():
+        p = subprocess.run(["wlr-randr", "--dryrun"],
+        stdout=subprocess.PIPE, check=True, text=True)
+        #Parse these values
+        #Look into detecting usb-c plug orientation.
+
+    def setorient():
+        subprocess.run(["wlr-randr", "--output", "DSI-1",
+            "--transform", "270"], check=True, text=True)
+
+    def restore():
+        if ui.resLock:
+            ui.setlock()
+        #else setorient()
+
+ui.detect()
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--device", type=int, default=0, help="Video Device number e.g. 0, use v4l2-ctl --list-devices")
@@ -352,4 +420,5 @@ while(cap.isOpened()):
 			break
 			capture.release()
 			cv2.destroyAllWindows()
+			ui.restore()
 		
