@@ -63,7 +63,7 @@ else:
 #256x192 General settings
 width = 256 #Sensor width
 height = 192 #sensor height
-scale = 3 #scale multiplier
+scale = 2 #scale multiplier
 newWidth = width*scale 
 newHeight = height*scale
 alpha = 1.0 # Contrast control (1.0-3.0)
