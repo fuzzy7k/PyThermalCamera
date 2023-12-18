@@ -69,8 +69,9 @@ newHeight = height*scale
 alpha = 1.0 # Contrast control (1.0-3.0)
 colormap = 0
 font=cv2.FONT_HERSHEY_SIMPLEX
-dispFullscreen = False
-cv2.namedWindow('Thermal',cv2.WINDOW_GUI_NORMAL)
+dispFullscreen = True
+cv2.namedWindow('Thermal',cv2.WND_PROP_FULLSCREEN)
+cv2.setWindowProperty('Thermal',cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
 cv2.resizeWindow('Thermal', newWidth,newHeight)
 rad = 0 #blur radius
 threshold = 2
