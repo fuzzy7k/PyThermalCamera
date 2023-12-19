@@ -1,0 +1,15 @@
+KERNEL!="video*", GOTO="thermal_v4l_end"
+ACTION!="add", GOTO="thermal_v4l_end"
+
+ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="5830", GOTO="thermal_v4l_start"
+
+GOTO="thermal_v4l_end"
+
+LABEL="thermal_v4l_start"
+
+MODE="660", GROUP="video"
+
+ENV{ID_V4L_CAPABILITIES}==":capture:", SYMLINK+="videoTIC", TAG+="systemd", \
+ENV{SYSTEMD_USER_WANTS}="ThermalCamera.service"
+
+LABEL="thermal_v4l_end"

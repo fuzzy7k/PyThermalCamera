@@ -113,14 +113,17 @@ ui.detect()
 parser = argparse.ArgumentParser()
 parser.add_argument("--device", type=int, default=0, help="Video Device number e.g. 0, use v4l2-ctl --list-devices")
 args = parser.parse_args()
-	
+
 if args.device:
-	dev = args.device
+    dev = str(args.device)
+elif open('/dev/videoTIC'):
+    dev = "TIC"
 else:
-	dev = 0
+    dev = "0"
+
 	
 #init video
-cap = cv2.VideoCapture('/dev/video'+str(dev), cv2.CAP_V4L)
+cap = cv2.VideoCapture('/dev/video'+dev, cv2.CAP_V4L)
 #cap = cv2.VideoCapture(0)
 #pull in the video but do NOT automatically convert to RGB, else it breaks the temperature data!
 #https://stackoverflow.com/questions/63108721/opencv-setting-videocap-property-to-cap-prop-convert-rgb-generates-weird-boolean

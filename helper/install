@@ -1,0 +1,7 @@
+#!/bin/bash
+
+BASEPATH="/usr/local"
+
+cp helper/70-tic.rules ${BASEPATH}/etc/udev/rules.d/
+cp helper/tic.service ${BASEPATH}/etc/systemd/user/
+cp src/tc001v4.2.py ${BASEPATH}/bin/PyThernalCamera.py

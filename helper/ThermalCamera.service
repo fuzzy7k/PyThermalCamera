@@ -1,0 +1,8 @@
+[Unit]
+Description=Launch Thermal Imaging Camera App
+ConditionEnvironment=XDG_SESSION_DESKTOP
+StopWhenUnneeded=True
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/PyThermalCamera.py
