@@ -18,11 +18,12 @@ print('a z: Increase/Decrease Blur')
 print('s x: Floating High and Low Temp Label Threshold')
 print('d c: Change Interpolated scale Note: This will not change the window size on the Pi')
 print('f v: Contrast')
-print('q w: Fullscreen Windowed (note going back to windowed does not seem to work on the Pi!)')
+print('e w: Fullscreen Windowed (note going back to windowed does not seem to work on the Pi!)')
 print('r t: Record and Stop')
 print('p : Snapshot')
 print('m : Cycle through ColorMaps')
 print('h : Toggle HUD')
+print('q : Quit')
 
 import cv2
 import numpy as np
@@ -303,7 +304,7 @@ while(cap.isOpened()):
 			if dispFullscreen == False and isPi == False:
 				cv2.resizeWindow('Thermal', newWidth,newHeight)
 
-		if keyPress == ord('q'): #enable fullscreen
+		if keyPress == ord('e'): #enable fullscreen
 			dispFullscreen = True
 			cv2.namedWindow('Thermal',cv2.WND_PROP_FULLSCREEN)
 			cv2.setWindowProperty('Thermal',cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
