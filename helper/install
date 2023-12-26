@@ -1,7 +1,12 @@
 #!/bin/bash
 
+#Make sure that we are running from the top of the source tree.
+cd ${0%%install}..
+
+#man pages indicate that udev and systemd files should be sourced from
+#/usr/local. It did not work in my experience.
 BASEPATH="/usr/local"
 
-cp helper/70-tic.rules ${BASEPATH}/etc/udev/rules.d/
-cp helper/tic.service ${BASEPATH}/etc/systemd/user/
-cp src/tc001v4.2.py ${BASEPATH}/bin/PyThernalCamera.py
+cp -v helper/70-tic.rules /etc/udev/rules.d/
+cp -v helper/ThermalCamera.service /etc/systemd/user/
+cp -vs ${PWD}/src/tc001v4.2.py ${BASEPATH}/bin/PyThermalCamera.py
