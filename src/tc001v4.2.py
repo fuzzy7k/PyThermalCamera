@@ -44,9 +44,12 @@ def is_raspberrypi():
 
 isPi = is_raspberrypi()
 
+
 class ui:
     session = ""
     rotLock = ""
+    resLock = False
+    display = []
 
     def detect():
         global isPi
@@ -63,6 +66,11 @@ class ui:
             ui.mobile()
 
     def mobile():
+        ui.getorient()
+
+        if len(ui.display)>1:
+            return
+
         #record lock setting
         ui.getlock()
 
@@ -70,10 +78,6 @@ class ui:
             ui.resLock = True
             ui.setlock("true")
 
-        #record orient
-        ui.getorient()
-
-        #reorient
         ui.setorient()
 
     #class gnome:
@@ -96,17 +100,29 @@ class ui:
     def getorient():
         p = subprocess.run(["wlr-randr", "--dryrun"],
         stdout=subprocess.PIPE, check=True, text=True)
-        #Parse these values
+
+        #Parse these values into the display object
+        for l in p.stdout.split('\n'):
+            i = -1
+            if l.startswith('  '):
+                key, sep, val = l.partition(':')
+                if val:
+                    ui.display[i].update({key.strip():val.strip()})
+            elif l.split(' ',1)[0] != '':
+                ui.display.append({'Name':l.split(' ',1)[0]})
+                i=i+1
         #Look into detecting usb-c plug orientation.
 
-    def setorient():
-        subprocess.run(["wlr-randr", "--output", "DSI-1",
-            "--transform", "270"], check=True, text=True)
+    def setorient(val='270'):
+        subprocess.run(["wlr-randr", "--output", ui.display[0]['Name'],
+            "--transform", val], check=True, text=True)
 
     def restore():
-        if ui.resLock:
-            ui.setlock()
-        #else setorient()
+        if ui.rotLock != '':
+            if ui.resLock:
+                ui.setlock("false")
+            else:
+                ui.setorient(ui.display[0]['Transform'])
 
 ui.detect()
 
@@ -420,8 +436,8 @@ while(cap.isOpened()):
 			snaptime = snapshot(heatmap)
 
 		if keyPress == ord('q'):
+			ui.restore()
 			break
 			capture.release()
 			cv2.destroyAllWindows()
-			ui.restore()
 		
