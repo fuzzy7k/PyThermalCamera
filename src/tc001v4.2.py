@@ -31,6 +31,7 @@ import argparse
 import time
 import io
 import os
+import signal
 import subprocess
 
 #We need to know if we are running on the Pi, because openCV behaves a little oddly on all the builds!
@@ -141,6 +142,24 @@ else:
 #init video
 cap = cv2.VideoCapture('/dev/video'+dev, cv2.CAP_V4L)
 #cap = cv2.VideoCapture(0)
+
+
+def close():
+    print("Shutting Down")
+    ui.restore()
+    cap.release()
+    cv2.destroyAllWindows()
+
+def signalQuit(signum, frame):
+    print("Received signal", signum, "-", signal.Signals(signum))
+    close()
+
+quit_sigs = {signal.SIGHUP, signal.SIGINT, signal.SIGQUIT,
+    signal.SIGABRT, signal.SIGUSR1, signal.SIGTERM}
+
+for sig in quit_sigs:
+    signal.signal(sig, signalQuit)
+
 #pull in the video but do NOT automatically convert to RGB, else it breaks the temperature data!
 #https://stackoverflow.com/questions/63108721/opencv-setting-videocap-property-to-cap-prop-convert-rgb-generates-weird-boolean
 if isPi == True:
@@ -436,8 +455,8 @@ while(cap.isOpened()):
 			snaptime = snapshot(heatmap)
 
 		if keyPress == ord('q'):
-			ui.restore()
 			break
-			capture.release()
-			cv2.destroyAllWindows()
-		
+	else:   #This may happen when we unplug
+		break
+
+close()
