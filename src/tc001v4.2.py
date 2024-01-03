@@ -162,9 +162,9 @@ for sig in quit_sigs:
 
 #pull in the video but do NOT automatically convert to RGB, else it breaks the temperature data!
 #https://stackoverflow.com/questions/63108721/opencv-setting-videocap-property-to-cap-prop-convert-rgb-generates-weird-boolean
-if isPi == True:
+try:
 	cap.set(cv2.CAP_PROP_CONVERT_RGB, 0.0)
-else:
+except:
 	cap.set(cv2.CAP_PROP_CONVERT_RGB, False)
 
 #256x192 General settings
