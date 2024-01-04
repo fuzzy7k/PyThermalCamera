@@ -130,14 +130,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--device", type=int, default=0, help="Video Device number e.g. 0, use v4l2-ctl --list-devices")
 args = parser.parse_args()
 
-if args.device:
-    dev = str(args.device)
-elif open('/dev/videoTIC'):
+if os.access('/dev/videoTIC', os.R_OK):
     dev = "TIC"
 else:
-    dev = "0"
+    dev = str(args.device)
 
-	
 #init video
 cap = cv2.VideoCapture('/dev/video'+dev, cv2.CAP_V4L)
 #cap = cv2.VideoCapture(0)
