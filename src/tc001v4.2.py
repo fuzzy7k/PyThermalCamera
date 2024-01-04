@@ -58,7 +58,7 @@ class ui:
         try:
             ui.session = os.environ['XDG_SESSION_DESKTOP']
         except:
-            session = "unknown"
+            ui.session = "unknown"
 
         print(ui.session)
 
