@@ -125,7 +125,6 @@ class ui:
             else:
                 ui.setorient(ui.display[0]['Transform'])
 
-ui.detect()
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--device", type=int, default=0, help="Video Device number e.g. 0, use v4l2-ctl --list-devices")
@@ -143,6 +142,11 @@ else:
 cap = cv2.VideoCapture('/dev/video'+dev, cv2.CAP_V4L)
 #cap = cv2.VideoCapture(0)
 
+if cap.isOpened():
+    ui.detect()
+else:
+    print("Nothing there")
+    exit(os.EX_OSFILE)
 
 def close():
     print("Shutting Down")
